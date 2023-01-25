@@ -7,7 +7,7 @@ Voice activity detection (VAD), also known as speech activity detection or speec
 
 VAD is an important enabling technology for a variety of speech-based applications. Therefore, various VAD algorithms have been developed that provide varying features and compromises between latency, sensitivity, accuracy and computational cost. Some VAD algorithms also provide further analysis, for example whether the speech is voiced, unvoiced or sustained. Voice activity detection is usually independent of language.
 
-![VAD](assets\q4E6R.png)
+![VAD](https://github.com/hanifabd/voice-activity-detection-vad-realtime/blob/master/assets/q4E6R.png)
 
 ## Package Used in this Service
 - webrtcvad - [explore here](https://pypi.org/project/webrtcvad/)
