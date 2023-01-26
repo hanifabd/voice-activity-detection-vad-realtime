@@ -10,8 +10,9 @@ VAD is an important enabling technology for a variety of speech-based applicatio
 ![VAD](https://github.com/hanifabd/voice-activity-detection-vad-realtime/blob/master/assets/q4E6R.png)
 
 ## Package Used in this Service
-- webrtcvad - [explore here](https://pypi.org/project/webrtcvad/)
-- pyaudio - [explore here](https://pypi.org/project/PyAudio/)
+- [VAD] webrtcvad - [explore here](https://pypi.org/project/webrtcvad/)
+- [VAD] pyaudio - [explore here](https://pypi.org/project/PyAudio/)
+- [STT] whisper - [explore here](https://github.com/openai/whisper)
 
 ## Service Brief (About Service)
 
