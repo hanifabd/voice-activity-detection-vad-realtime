@@ -66,7 +66,6 @@ while True:
         wf.writeframes(b''.join(frames))
         wf.close()
 
-        # Some Sample Activity - 5 Seconds execution
         # Transcribe
         transcription = model.transcribe(
             audio=audio_recorded_filename,
@@ -76,9 +75,11 @@ while True:
 
         # # Stop Debug
         break
-
+        
+        # # Some Sample Activity - 5 Seconds execution
         # time.sleep(5)
-        inactive_session = False
+        # # Flagging to Listen Again
+        # inactive_session = False
     else:
         sys.stdout.write('1' if is_active else '_')
     
