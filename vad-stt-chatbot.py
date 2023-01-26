@@ -15,7 +15,7 @@ input("Press Enter to continue...")
 print("Voice Activity Monitoring")
 print("1 - Activity Detected")
 print("_ - No Activity Detected")
-print("X - No Activity Detected for Last 2 Seconds")
+print("X - No Activity Detected for Last IDLE_TIME Seconds")
 print("\nMonitor Voice Activity Below:")
 
 # Parameters
