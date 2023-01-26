@@ -25,7 +25,8 @@ RATE = 16000
 FRAMES_PER_BUFFER = 320
 
 # Initialize the VAD with a mode (e.g. aggressive, moderate, or gentle)
-vad = webrtcvad.Vad(2)
+# 0: Least filtering noise - 3: Aggressive in filtering noise
+vad = webrtcvad.Vad(3)
 
 # Open a PyAudio stream to get audio data from the microphone
 pa = pyaudio.PyAudio()
@@ -77,7 +78,7 @@ while True:
         # Sent to Chatbot
         response = requests.request(
             "POST", 
-            "<RASA_CHATBOT_ENDPOINT>", 
+            "<CHATBOT_ENDPOINT>", 
             headers={'Content-Type': 'application/json'}, 
             data=json.dumps({
                 "sender": "test-user",
