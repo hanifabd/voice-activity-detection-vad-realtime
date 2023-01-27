@@ -14,7 +14,7 @@ print("\nMonitor Below:")
 # Parameters
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 16000
+RATE = 16000 # 8000, 16000, 32000
 FRAMES_PER_BUFFER = 320
 
 # Initialize the VAD with a mode (e.g. aggressive, moderate, or gentle)
