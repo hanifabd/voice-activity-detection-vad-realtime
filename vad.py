@@ -8,8 +8,9 @@ from uuid import uuid4
 print("Voice Activity Monitoring")
 print("1 - Activity Detected")
 print("_ - No Activity Detected")
-print("X - No Activity Detected for Last 2 Seconds")
-print("\nMonitor Below:")
+print("X - No Activity Detected for Last IDLE_TIME Seconds")
+input("Press Enter to continue...")
+print("\nMonitor Voice Activity Below:")
 
 # Parameters
 FORMAT = pyaudio.paInt16
