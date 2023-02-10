@@ -11,12 +11,17 @@ import os
 
 model = whisper.load_model("tiny", download_root="model/")
 
+def encode_audio_frame(audio_frames):
+    encoded = [struct.pack('h' * len(decoded_frame), *decoded_frame) for decoded_frame in audio_frames]
+    return encoded
+
 def callback(ch, method, props, body):
     dict_string = body.decode('utf-8')
     data = ast.literal_eval(dict_string)
     print(f'{datetime.datetime.now()} [Received Data] - {data["user_id"]} - {data["session_id"]}')
 
-    audio_frames = [struct.pack('h' * len(decoded_frame), *decoded_frame) for decoded_frame in data["decoded_audio_frames"]]
+    # Re encode audio frames
+    audio_frames = encode_audio_frame(data["decoded_audio_frames"])
     
     # Save the recorded data as a WAV file
     audio_recorded_filename = f'audio/{data["user_id"]}-{data["session_id"]}-{time.time()}.wav'
@@ -27,6 +32,7 @@ def callback(ch, method, props, body):
     wf.writeframes(b''.join(audio_frames))
     wf.close()
 
+    # Check if audio file has been created
     while not os.path.isfile(audio_recorded_filename):
         time.sleep(0.5)
 
@@ -36,7 +42,9 @@ def callback(ch, method, props, body):
         language = "id",
     )
     
+    # Get text from transcription
     transcription_text = str(transcription["text"].strip())
+
     # Dont send text if only contains whitespaces
     if not transcription_text.isspace():
         # Dont send text if only  ""
