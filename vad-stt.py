@@ -7,7 +7,7 @@ from uuid import uuid4
 
 import whisper
 # Load Model
-model = whisper.load_model("tiny", download_root="../Speech to Text/whisper/model/")
+model = whisper.load_model("tiny", download_root="model/")
 
 input("Press Enter to continue...")
 print("Voice Activity Monitoring")
@@ -23,7 +23,7 @@ RATE = 16000 # 8000, 16000, 32000
 FRAMES_PER_BUFFER = 320
 
 # Initialize the VAD with a mode (e.g. aggressive, moderate, or gentle)
-vad = webrtcvad.Vad(2)
+vad = webrtcvad.Vad(3)
 
 # Open a PyAudio stream to get audio data from the microphone
 pa = pyaudio.PyAudio()
