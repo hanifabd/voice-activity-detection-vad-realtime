@@ -9,7 +9,7 @@ import json
 import os
 
 
-model = whisper.load_model("tiny", download_root="model/")
+model = whisper.load_model("tiny", download_root="../model/")
 
 def encode_audio_frame(audio_frames):
     encoded = [struct.pack('h' * len(decoded_frame), *decoded_frame) for decoded_frame in audio_frames]
