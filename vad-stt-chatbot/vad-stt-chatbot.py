@@ -4,16 +4,18 @@ import sys
 import time
 import wave
 from uuid import uuid4
+import requests
+import json
 
 import whisper
 # Load Model
-model = whisper.load_model("tiny", download_root="model/")
+model = whisper.load_model("tiny", download_root="../model/")
 
+input("Press Enter to continue...")
 print("Voice Activity Monitoring")
 print("1 - Activity Detected")
 print("_ - No Activity Detected")
 print("X - No Activity Detected for Last IDLE_TIME Seconds")
-input("Press Enter to continue...")
 print("\nMonitor Voice Activity Below:")
 
 # Parameters
@@ -23,6 +25,7 @@ RATE = 16000 # 8000, 16000, 32000
 FRAMES_PER_BUFFER = 320
 
 # Initialize the VAD with a mode (e.g. aggressive, moderate, or gentle)
+# 0: Least filtering noise - 3: Aggressive in filtering noise
 vad = webrtcvad.Vad(3)
 
 # Open a PyAudio stream to get audio data from the microphone
@@ -40,7 +43,7 @@ while True:
     is_active = vad.is_speech(data, sample_rate=RATE)
     
     # Check Flagging for Stop after N Seconds
-    idle_time = 2
+    idle_time = 1
     if is_active:
         inactive_session = False
     else:
@@ -58,7 +61,7 @@ while True:
         frames.append(data)
 
         # Save the recorded data as a WAV file
-        audio_recorded_filename = f'RECORDED-{str(time.time())}-{str(uuid4()).replace("-","")}.wav'
+        audio_recorded_filename = f'../audio/RECORDED-{str(time.time())}-{str(uuid4()).replace("-","")}.wav'
         wf = wave.open(audio_recorded_filename, 'wb')
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(pa.get_sample_size(FORMAT))
@@ -71,7 +74,22 @@ while True:
             audio=audio_recorded_filename,
             language="id",
         )
-        print(f'\n{str(transcription["text"].strip())}')
+
+        # Sent to Chatbot
+        response = requests.request(
+            "POST", 
+            "<CHATBOT_ENDPOINT>", 
+            headers={'Content-Type': 'application/json'}, 
+            data=json.dumps({
+                "sender": "test-user",
+                "message": str(transcription["text"].strip()),
+            })
+        )
+
+        # Print User and Bot Message
+        print(f'\nUser: {str(transcription["text"].strip())}')
+        for message in response.json():
+            print(f'Bot : {json.dumps(message["text"])}')
 
         # # Stop Debug
         break
