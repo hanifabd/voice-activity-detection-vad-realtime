@@ -24,7 +24,7 @@ def callback(ch, method, props, body):
     audio_frames = encode_audio_frame(data["decoded_audio_frames"])
     
     # Save the recorded data as a WAV file
-    audio_recorded_filename = f'audio/{data["user_id"]}-{data["session_id"]}-{time.time()}.wav'
+    audio_recorded_filename = f'../audio/{data["user_id"]}-{data["session_id"]}-{time.time()}.wav'
     wf = wave.open(audio_recorded_filename, 'wb')
     wf.setnchannels(1)
     wf.setsampwidth(2)
