@@ -1,81 +1,62 @@
 import asyncio
 import websockets
 import webrtcvad
-import sys
 import struct
-import time
+import sys
+
 
 vad = webrtcvad.Vad(3)
 
-SAMPLE_RATE = 16000
-FRAME_SIZE = 320
-BYTES_PER_SAMPLE = 2
-
-INACTIVITY_TIMEOUT = 1
-
-PORT = 5000
-
 class AudioStream:
-    def __init__(self):
-        self.buffers = {}
-        self.last_activity_time = {}
+    def __init__(self) -> None:
+        self.sample_rate = 16000
+        self.frame_size = 320
+        self.bytes_per_sample = 2
+        self.buffer = b''
 
-    def add_audio_data(self, client_id, audio_data):
-        if client_id not in self.buffers:
-            self.buffers[client_id] = b''
-            self.last_activity_time[client_id] = time.time()
-        self.buffers[client_id] += audio_data
-        self.last_activity_time[client_id] = time.time()
+    def convert_buffer_size(self, audio_frame):
+        buffer = self.buffer + audio_frame
+        if len(buffer) >= (self.frame_size * self.bytes_per_sample):
+            split_640 = struct.unpack(f'<{self.frame_size}h', buffer[:self.frame_size * self.bytes_per_sample])
+            split_640 = bytes(struct.pack(f'<{self.frame_size}h', *split_640))
+            self.buffer = buffer[self.frame_size * self.bytes_per_sample:]
+            status = True
+        else:
+            split_640 =  buffer
+            self.buffer = buffer
+            status = False
+        return split_640, status
     
-    def save_audio_data(self, client_id):
-        filename = f"audio_{client_id}_{time.time()}.wav"
-        with open(filename, "wb") as f:
-            f.write(self.buffers[client_id])
-        self.buffers[client_id] = b''
-        del self.last_activity_time[client_id]
-
-    def process_audio_data(self, client_id):
-        buffer = self.buffers[client_id]
-        print(len(buffer))
-        print(FRAME_SIZE * BYTES_PER_SAMPLE)
-        while len(buffer) >= FRAME_SIZE * BYTES_PER_SAMPLE:
-            pcm_data = struct.unpack(f'<{FRAME_SIZE}h', buffer[:FRAME_SIZE * BYTES_PER_SAMPLE])
-            pcm_data = bytes(struct.pack(f'<{FRAME_SIZE}h', *pcm_data))
-            if vad.is_speech(pcm_data, SAMPLE_RATE):
-                sys.stdout.write(f"{client_id}: 1\n")
-                self.last_activity_time[client_id] = time.time()
+    def voice_activity_detection(self, audio_frame):
+        converted_frame, status = self.convert_buffer_size(audio_frame)
+        if status == True:
+            is_speech = vad.is_speech(converted_frame, sample_rate=16000)
+            if is_speech:
+                return "1"
             else:
-                sys.stdout.write(f"{client_id}: _\n")
-                if time.time() - self.last_activity_time[client_id] > INACTIVITY_TIMEOUT:
-                    sys.stdout.write(f"{client_id}: X\n")
-                    self.save_audio_data(client_id)
+                return "_"
+        else:
+            return ""
 
-            # Flush Terminal
-            sys.stdout.flush()
-            buffer = buffer[FRAME_SIZE * BYTES_PER_SAMPLE:]
-        self.buffers[client_id] = buffer
-                
-audio_stream = AudioStream()
 
-async def handle_websocket(websocket, path):
-    client_id = id(websocket)
-    print(f"WebSocket connection established for client {client_id} and path {path}")
+audiostream = AudioStream()
+async def handler(websocket, path):
+    print(f"WebSocket connection established for client from {path}")
     try:
         async for message in websocket:
-            audio_stream.add_audio_data(client_id, message)
-            audio_stream.process_audio_data(client_id)
-            break
+            is_active = audiostream.voice_activity_detection(message)
+            sys.stdout.write(is_active)
+            sys.stdout.flush()
     except websockets.exceptions.ConnectionClosed:
-        print(f"WebSocket connection closed for client {client_id} and path {path}")
+        print(f"WebSocket connection closed for client")
     except Exception as e:
         print(f"Error occurred: {e}")
     finally:
         await websocket.close()
-        if client_id in audio_stream.buffers:
-            del audio_stream.buffers[client_id]
-    
+
 async def main():
-    async with websockets.serve(handle_websocket, 'localhost', PORT):
+    PORT = 5000
+    async with websockets.serve(handler, 'localhost', PORT):
         print(f"WebSocket server started at ws://localhost:{PORT}")
         await asyncio.Future()
 
