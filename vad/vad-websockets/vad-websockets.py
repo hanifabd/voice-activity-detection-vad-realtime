@@ -11,6 +11,8 @@ class AudioStream:
         self.sample_rate = 16000
         self.frame_size = 320
         self.bytes_per_sample = 2
+        self.idle_cut = (self.sample_rate/2)/320 # chunk audio if no voice for 0.5 seconds
+        self.last_voice_activity = 0
 
     def convert_buffer_size(self, audio_frame):
         while len(audio_frame) < (self.frame_size * self.bytes_per_sample):
@@ -21,9 +23,15 @@ class AudioStream:
         converted_frame = self.convert_buffer_size(audio_frame)
         is_speech = vad.is_speech(converted_frame, sample_rate=16000)
         if is_speech:
+            self.last_voice_activity = 0
             return "1"
         else:
-            return "_"
+            if self.last_voice_activity == ((self.sample_rate/2)/self.frame_size):
+                self.last_voice_activity = 0
+                return "X"
+            else:
+                self.last_voice_activity += 1
+                return "_"
 
 audiostream = AudioStream()
 async def handler(websocket, path):
