@@ -11,7 +11,7 @@ class AudioStream:
         self.sample_rate = 16000
         self.frame_size = 320
         self.bytes_per_sample = 2
-        self.idle_cut = (self.sample_rate/2)/320 # chunk audio if no voice for 0.5 seconds
+        self.idle_cut = (self.sample_rate/2)/self.frame_size # chunk audio if no voice for 0.5 seconds
         self.last_voice_activity = 0
 
     def convert_buffer_size(self, audio_frame):
@@ -21,12 +21,12 @@ class AudioStream:
     
     def voice_activity_detection(self, audio_frame):
         converted_frame = self.convert_buffer_size(audio_frame)
-        is_speech = vad.is_speech(converted_frame, sample_rate=16000)
+        is_speech = vad.is_speech(converted_frame, sample_rate=self.sample_rate)
         if is_speech:
             self.last_voice_activity = 0
             return "1"
         else:
-            if self.last_voice_activity == ((self.sample_rate/2)/self.frame_size):
+            if self.last_voice_activity == self.idle_cut:
                 self.last_voice_activity = 0
                 return "X"
             else:
