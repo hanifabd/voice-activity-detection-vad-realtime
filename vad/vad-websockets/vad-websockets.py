@@ -1,7 +1,6 @@
 import asyncio
 import websockets
 import webrtcvad
-import struct
 import sys
 
 
@@ -12,32 +11,19 @@ class AudioStream:
         self.sample_rate = 16000
         self.frame_size = 320
         self.bytes_per_sample = 2
-        self.buffer = b''
 
     def convert_buffer_size(self, audio_frame):
-        buffer = self.buffer + audio_frame
-        if len(buffer) >= (self.frame_size * self.bytes_per_sample):
-            split_640 = struct.unpack(f'<{self.frame_size}h', buffer[:self.frame_size * self.bytes_per_sample])
-            split_640 = bytes(struct.pack(f'<{self.frame_size}h', *split_640))
-            self.buffer = buffer[self.frame_size * self.bytes_per_sample:]
-            status = True
-        else:
-            split_640 =  buffer
-            self.buffer = buffer
-            status = False
-        return split_640, status
+        while len(audio_frame) < (self.frame_size * self.bytes_per_sample):
+            audio_frame = audio_frame + b'\x00'
+        return audio_frame
     
     def voice_activity_detection(self, audio_frame):
-        converted_frame, status = self.convert_buffer_size(audio_frame)
-        if status == True:
-            is_speech = vad.is_speech(converted_frame, sample_rate=16000)
-            if is_speech:
-                return "1"
-            else:
-                return "_"
+        converted_frame = self.convert_buffer_size(audio_frame)
+        is_speech = vad.is_speech(converted_frame, sample_rate=16000)
+        if is_speech:
+            return "1"
         else:
-            return ""
-
+            return "_"
 
 audiostream = AudioStream()
 async def handler(websocket, path):
