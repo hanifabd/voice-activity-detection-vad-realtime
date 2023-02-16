@@ -12,6 +12,7 @@ VAD is an important enabling technology for a variety of speech-based applicatio
 ---
 
 ## **Package Used in this Services**
+> Check `requirements.txt` for more details if something error
 - `[VAD]` webrtcvad - [explore here](https://pypi.org/project/webrtcvad/)
 - `[VAD]` pyaudio - [explore here](https://pypi.org/project/PyAudio/)
 - `[STT]` whisper - [explore here](https://github.com/openai/whisper)
@@ -27,14 +28,14 @@ This code will monitor voice activity by using `1 (Voice Activity Detected)`, `_
 ---
 
 ## **Simple Use Cases of Voice Activity Detection**
-1. Voice Activity Detection (vad)
+1. **Voice Activity Detection (vad)**
     > in folder `vad`, i create an implementation of vad for web service using websockets. you can explore it on folder `vad/vad-websockets`.
     - vad.py
-2. Speech to Text with Voice Activity Detection (vad-stt)
+2. **Speech to Text with Voice Activity Detection (vad-stt)**
     - vad-stt.py
-3. Voice Bot (vad-stt-chatbot)
+3. **Voice Bot (vad-stt-chatbot)**
     - vad-stt-chatbot.py
-4. Live Transcription (vad-stt-transcription)
+4. **Live Transcription (vad-stt-transcription)**
     > This service need `rabbitmq` installed for queuing the audio before transcription. run `vad-stt-transcription-worker.py` and `vad-stt-transcription-show.py` first. then you can run `vad-stt-transcription.py`
     - vad-stt-transcription.py `(Recorder)`
     - vad-stt-transcription-worker.py `(Service for generate and transcribe audio)`
