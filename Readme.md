@@ -18,6 +18,7 @@ VAD is an important enabling technology for a variety of speech-based applicatio
 - `[STT]` whisper - [explore here](https://github.com/openai/whisper)
 - `[QUEUE]` pika - [explore here](https://pypi.org/project/pika/)
 - `[QUEUE]` rabbitmq - [explore here](https://www.rabbitmq.com/)
+- `[API]` websockets - [explore here](https://pypi.org/project/websockets/)
 
 ---
 
