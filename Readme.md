@@ -30,7 +30,7 @@ This code will monitor voice activity by using `1 (Voice Activity Detected)`, `_
 
 ## **Simple Use Cases of Voice Activity Detection**
 1. **Voice Activity Detection (vad)**
-    > in folder `vad`, i create an implementation of vad for web service using websockets. you can explore it on folder `vad/vad-websockets`.
+    > in folder `vad`, i create an implementation of vad for web service using websockets. you can explore it on folder `vad/vad-websockets`. <br><br>**NOTE:**<br> I got some difficulties in the client part at the javascript (`index.html`). Vad that i set to receive 16000hz audio with 320 buffersize, but the client send 44100hz audio with automatic value of buffersize detected by device. I found some example code to downsample the audio to 16000hz but not with the buffersize. if there are optional way please share to me, it would be my pleasure ‎😃.
     - vad.py
 2. **Speech to Text with Voice Activity Detection (vad-stt)**
     - vad-stt.py
