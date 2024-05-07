@@ -1,7 +1,5 @@
 # _**Voice Activity Detection**_
 
-<a href="https://paypal.me/hanifabdlh?country.x=ID&locale.x=id_ID"><img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" height="72"></a>
-
 ## **Brief About Voice Activity Detection (VAD)**
 [[Wikipedia](https://en.wikipedia.org/wiki/Voice_activity_detection)]
 
