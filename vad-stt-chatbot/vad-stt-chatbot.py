@@ -91,6 +91,9 @@ while True:
         for message in response.json():
             print(f'Bot : {json.dumps(message["text"])}')
 
+        # Empty Frame
+        frames = []
+
         # # Stop Debug
         break
         
